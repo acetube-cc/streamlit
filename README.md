@@ -1,8 +1,8 @@
-# Summarize Tube *by Dr. Dror*
+# AceTube *by Dr. Dror*
 
 **TL;DR** By giving a link to a YouTube video and providing prompts to title, description and hashtags, the tool will generate the needed meta data.
 
-Let's discuss 😎 [here](https://github.com/drorata/acetube_streamlit/discussions)
+Let's discuss 😎 [here](https://github.com/acetube-cc/streamlit/discussions)
 
 ## Getting Started
 
