@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  validate_lint:
+    cmds:
+      - poetry run black --check --preview .
+      - poetry run flake8 .
+      - poetry run isort -c --df .
+
+  run_tests:
+    cmds:
+      - poetry run pytest ./acetube_streamlit/tests
