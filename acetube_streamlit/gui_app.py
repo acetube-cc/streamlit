@@ -57,16 +57,29 @@ if video_url:
         # Fetch the transcript if it hasn't been fetched yet
         if st.session_state.transcript is None:
             try:
-                st.session_state.transcript = utils.get_full_transcription(video_id)
+                transcript = utils.get_full_transcription(video_id)
+                transcript = st.text_area(
+                    "Transcript",
+                    value=transcript,
+                    height=200,
+                )
+                st.session_state.transcript = transcript
+
             except Exception as e:
                 st.error(
                     "Failed to retrieve the transcript. "
-                    "Please check the video ID and try again."
+                    "Please check the video ID and try again or manually "
+                    "provide the script below."
                 )
                 logger.error(
                     f"Error retrieving transcript for video ID {video_id}: {e}"
                 )
-                st.stop()
+                transcript_input = st.text_area(
+                    "Paste the transcript here",
+                    height=200,
+                    help="Paste here the transcript of the video you want to summarize",
+                )
+                st.session_state.transcript = transcript_input
 
 # Step 2: Confirm Transcript
 if st.session_state.transcript:
