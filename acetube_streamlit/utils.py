@@ -95,7 +95,7 @@ def gen_summary_from_transcript(
         temperature=0.2,
     )
 
-    return chat_completion.choices[0].message.content
+    return chat_completion.choices[0].message.content  # type: ignore
 
 
 def struct_summary(summery: str | None) -> SummeryTube:
