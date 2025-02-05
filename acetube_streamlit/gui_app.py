@@ -3,18 +3,34 @@ from loguru import logger
 import streamlit as st
 from acetube_streamlit import utils
 from acetube_streamlit.models import SummeryTube, configure_prompts_of_fields
+from acetube_streamlit.settings import Settings
+
+settings = Settings()  # pyright: ignore
+
+
+logger.info("Starting Streamlit app iteration")
+
+utils.track_run(
+    url=settings.supabase_url, key=settings.supabase_key, env=settings.runtime_env
+)
 
 st.sidebar.write(
     """
-    # Summarize YouTube Videos
+    # 🚀 AceTube 🚀
+
+    > Quickly generate quality metadata for your content!
 
     Generate a title, description, and tags for a YouTube video.
-    All you need to do is paste the video ID below and click continue.
+    All you need to do is paste the transcript of the video
+    (you can find it in the "Studio 🎬")
 
-    * Made by Dr. Dror
-    * Code available [here](https://github.com/drorata/acetube_streamlit)
-    * Be, nice - don't exploit the OpenAI API too much!
-    * Say hello over [LinkedIn](https://www.linkedin.com/in/atariah/)
+    * 🔧 Made by Dr. Dror
+    * 🧑‍💻 Code available [here](https://github.com/acetube-cc/streamlit)
+    * 👊 Use this tool on your own risk! Dr. Dror is not responsible for any damage that
+      you may have!
+    * 🐞 Bug reports are welcomed [here](https://github.com/acetube-cc/streamlit/issues).
+    * 🎙️ Let's discuss [here](https://github.com/acetube-cc/streamlit/discussions)
+    * 👋🏻 Say hello over [LinkedIn](https://www.linkedin.com/in/atariah/)
     """
 )
 
@@ -27,8 +43,6 @@ def reset_session_state() -> None:
 
 
 # Initialize session state for each step
-if "video_url" not in st.session_state:
-    st.session_state.video_url = ""
 if "transcript" not in st.session_state:
     st.session_state.transcript = None
 if "summary" not in st.session_state:
@@ -38,59 +52,16 @@ if "transcript_confirmed" not in st.session_state:
 if "prompt_confirmed" not in st.session_state:
     st.session_state.prompt_confirmed = False
 
-# Step 1: Input YouTube Video ID
-video_url = st.text_input(
-    "URL of YouTube Video to process:",
-    st.session_state.video_url,
-    help="Paste here the URL of the YouTube video you want to summarize",
-    on_change=reset_session_state,
+transcript_input = st.text_area(
+    "Paste the transcript here",
+    height=200,
+    help="Paste here the transcript of the video you want to summarize",
+    key="manual_input",
 )
+st.session_state.transcript = transcript_input
 
-
-if video_url:
-    st.session_state.video_url = video_url
-    video_id = utils.get_video_id(video_url)
-    st.video(data=f"https://www.youtube.com/watch?v={video_id}")
-    if st.button("🚀 Click here if this is the video you want to process"):
-        logger.info(f"Processing video with ID: {video_id}")
-        st.write("Fetching transcript...")
-        # Fetch the transcript if it hasn't been fetched yet
-        if st.session_state.transcript is None:
-            try:
-                transcript = utils.get_full_transcription(video_id)
-                transcript = st.text_area(
-                    "Transcript",
-                    value=transcript,
-                    height=200,
-                )
-                st.session_state.transcript = transcript
-
-            except Exception as e:
-                st.error(
-                    "Failed to retrieve the transcript. "
-                    "Please check the video ID and try again or manually "
-                    "provide the script below."
-                )
-                logger.error(
-                    f"Error retrieving transcript for video ID {video_id}: {e}"
-                )
-                transcript_input = st.text_area(
-                    "Paste the transcript here",
-                    height=200,
-                    help="Paste here the transcript of the video you want to summarize",
-                )
-                st.session_state.transcript = transcript_input
-
-# Step 2: Confirm Transcript
-if st.session_state.transcript:
-    st.text_area(
-        "Transcript",
-        st.session_state.transcript,
-        height=200,
-        disabled=True,
-    )
-    if st.button("🚀 Click here if the transcript is correct"):
-        st.session_state.transcript_confirmed = True
+if st.button("🚀 Click here if the transcript is correct"):
+    st.session_state.transcript_confirmed = True
 
 # Step 3: Configure prompts of the fields
 if st.session_state.transcript_confirmed:
@@ -120,8 +91,8 @@ if st.session_state.transcript_confirmed:
                     st.session_state.transcript
                 )
             except Exception as e:
-                st.error("Failed to generate the summary.")
-                logger.error(f"Error generating summary for video ID {video_id}: {e}")
+                st.error(f"Failed to generate the summary with the error {e}")
+
         if st.session_state.summary:
             st.write("## Summary:")
             st.session_state.summary = utils.struct_summary(st.session_state.summary)

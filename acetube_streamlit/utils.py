@@ -4,10 +4,19 @@ from urllib.parse import parse_qs, urlparse
 
 from loguru import logger
 from openai import OpenAI
+from supabase import Client, create_client
 from youtube_transcript_api import YouTubeTranscriptApi
 
 from acetube_streamlit.models import SummeryTube
 from acetube_streamlit.settings import Settings
+
+
+def track_run(url: str, key: str, env: str) -> None:
+    supabase: Client = create_client(url, key)
+    try:
+        supabase.table("usage_tracking").insert({"env": env}).execute()
+    except Exception as e:
+        logger.error(f"Failed to track the run with the error {e}")
 
 
 def get_video_id(video_url) -> str:

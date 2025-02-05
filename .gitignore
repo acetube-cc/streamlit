@@ -1,4 +1,5 @@
 .env
+passwords.txt
 
 __pycache__/
 .mypy_cache/
