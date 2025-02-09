@@ -1,0 +1,43 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+domains:
+- domain: acetube.cc
+  type: PRIMARY
+  zone: acetube.cc
+envs:
+- key: GITHUB_TOKEN
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:G6lzf/UJK3a97agq3cQL0wja7lg9FTQN:4OgZf3EjHSH1J/kOreoaIYP9zRXoDG+ZN31Bgkiihb4H5W4pqYFG8tg8cpZlW2nD0MDP6Hsn7f263jKYZy/vm56Oockt9NccmXu3l8ipna4ofSCAXCEAK4nOvEMSwOqjbS2YSw35YLiFiQpwug==]
+- key: SUPABASE_URL
+  scope: RUN_AND_BUILD_TIME
+  value: https://eskkunwecxkxxnxfizvq.supabase.co
+- key: SUPABASE_KEY
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:XRnaB94amjY8pEk0bIkGzW4jT7ts72Ca:p+EL4lD7PcUY7KqnBiK1J9OWtjOzWRmYGCau0Lus7Lbuu09s3p6QVKPlSb0oKNf4sLn5bz/sXmxI7i5tJ2sjZZ9K/utz0vcUZG8lqK64d1jkRZsZzr36dXTppVm8T/CKgVGhg4blqPHQnIK2Oxe9YSWdDlzySk/TSWePU+PrcXUWyRhVSIl+cNIqqT+Qq5a42ZbGvY4StZS0FmLxpZAf1kd1IO6siDJvdZUcZlKFKGFiForOFpPVH2WiKeEfpy3ZYw7qvSnjkmtL8yMI7Z5ul2zYSobUPfkJftnK60TWpFdLzWW38ccg1p5Ysg==]
+- key: RUNTIME_ENV
+  scope: RUN_AND_BUILD_TIME
+  value: prod-digitalocean
+features:
+- buildpack-stack=ubuntu-22
+ingress:
+  rules:
+  - component:
+      name: drorata-acetube-streamlit
+    match:
+      path:
+        prefix: /
+name: goldfish-app
+region: fra
+services:
+- http_port: 80
+  image:
+    registry: drorata
+    registry_type: DOCKER_HUB
+    repository: acetube-streamlit
+    tag: latest
+  instance_count: 1
+  instance_size_slug: apps-s-1vcpu-0.5gb
+  name: drorata-acetube-streamlit
