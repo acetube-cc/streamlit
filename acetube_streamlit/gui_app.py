@@ -24,7 +24,7 @@ st.sidebar.write(
     All you need to do is paste the transcript of the video
     (you can find it in the "Studio 🎬")
 
-    * 🔧 Made by Dr. Dror
+    * 🔧 Made by [Dr. Dror](https://www.youtube.com/@dr-dror)
     * 🧑‍💻 Code available [here](https://github.com/acetube-cc/streamlit)
     * 👊 Use this tool on your own risk! Dr. Dror is not responsible for any damage that
       you may have!
